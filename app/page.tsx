@@ -4,7 +4,7 @@ import { getArticles } from "@/lib/strapi";
 export const revalidate = 60; // Revalidate page every 60 seconds
 
 export default async function Home() {
-  const articles = await getArticles();
+  const articles = await getArticles("hiring");
 
   return (
     <div className="min-h-screen bg-[#0d0d0d]">

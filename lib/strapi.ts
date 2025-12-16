@@ -78,8 +78,11 @@ export interface StrapiResponse<T> {
 }
 
 // Fetch all articles from Strapi
-export async function getArticles(): Promise<Article[]> {
+export async function getArticles(categorySlug?: string): Promise<Article[]> {
   try {
+    const categoryFilter = categorySlug
+      ? `&filters[category][slug][$eq]=${categorySlug}`
+      : "";
     const response = await fetch(
       `${STRAPI_URL}/api/articles?sort=publishedAt:desc&pagination[limit]=1000&populate=blocks`,
       {
