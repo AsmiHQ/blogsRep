@@ -1,4 +1,6 @@
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { notFound } from "next/navigation";
 import { getArticleBySlug, getAllArticleSlugs } from "@/lib/strapi";
 import type { Metadata } from "next";
@@ -45,93 +47,7 @@ export default async function BlogPost({
   }
 
   // Simple markdown-like rendering for body text
-  const renderBody = (text: string | undefined | null) => {
-    if (!text) {
-      return <p className="text-zinc-400 italic">No content available.</p>;
-    }
-    return text.split("\n\n").map((paragraph, index) => {
-      // Check for headers
-      if (paragraph.startsWith("# ")) {
-        return (
-          <h2
-            key={index}
-            className="mb-6 mt-12 text-3xl font-bold text-white first:mt-0"
-          >
-            {paragraph.slice(2)}
-          </h2>
-        );
-      }
-      if (paragraph.startsWith("## ")) {
-        return (
-          <h3
-            key={index}
-            className="mb-4 mt-10 text-2xl  text-white first:mt-0"
-          >
-            {paragraph.slice(3)}
-          </h3>
-        );
-      }
-      if (paragraph.startsWith("### ")) {
-        return (
-          <h4
-            key={index}
-            className="mb-3 mt-8 text-xl font-semibold text-white first:mt-0"
-          >
-            {paragraph.slice(4)}
-          </h4>
-        );
-      }
 
-      // Check for code blocks
-      if (paragraph.startsWith("```") && paragraph.endsWith("```")) {
-        const code = paragraph.slice(3, -3).trim();
-        return (
-          <pre
-            key={index}
-            className="my-6 overflow-x-auto rounded-xl bg-zinc-800/50 p-6 font-mono text-sm text-zinc-300"
-          >
-            <code>{code}</code>
-          </pre>
-        );
-      }
-
-      // Check for blockquotes
-      if (paragraph.startsWith("> ")) {
-        return (
-          <blockquote
-            key={index}
-            className="my-6 border-l-4 border-amber-500/50 pl-6 italic text-zinc-400"
-          >
-            {paragraph.slice(2)}
-          </blockquote>
-        );
-      }
-
-      // Check for bullet lists
-      if (paragraph.includes("\n- ")) {
-        const items = paragraph.split("\n- ").filter(Boolean);
-        return (
-          <ul key={index} className="my-6 space-y-2 pl-6">
-            {items.map((item, i) => (
-              <li
-                key={i}
-                className="relative text-lg leading-relaxed text-zinc-300 before:absolute before:-left-4 before:text-amber-500 before:content-['•']"
-              >
-                {item.startsWith("- ") ? item.slice(2) : item}
-              </li>
-            ))}
-          </ul>
-        );
-      }
-
-      // Regular paragraph
-      return (
-        <p key={index} className="mb-6 text-lg leading-relaxed text-zinc-300">
-          {paragraph}
-        </p>
-      );
-    });
-  };
 
   return (
     <div className="min-h-screen bg-[#0d0d0d]">
@@ -197,7 +113,13 @@ export default async function BlogPost({
           <div className="mb-12 h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent" />
 
           {/* Article body */}
-          <div className="prose-custom">{renderBody(article.body)}</div>
+        
+          <div className="prose prose-invert max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {article.body}
+          </ReactMarkdown>
+          </div>
+
 
           {/* Article footer */}
           <footer className="mt-16 border-t border-zinc-800/50 pt-12">
