@@ -81,7 +81,7 @@ export interface StrapiResponse<T> {
 export async function getArticles(): Promise<Article[]> {
   try {
     const response = await fetch(
-      `${STRAPI_URL}/api/articles?sort=publishedAt:desc&populate=blocks`,
+      `${STRAPI_URL}/api/articles?sort=publishedAt:desc&pagination[limit]=1000&populate=blocks`,
       {
         next: { revalidate: 60 }, // Revalidate every 60 seconds for fresh content
       }
