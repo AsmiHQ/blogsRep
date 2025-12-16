@@ -84,7 +84,7 @@ export async function getArticles(categorySlug?: string): Promise<Article[]> {
       ? `&filters[category][slug][$eq]=${categorySlug}`
       : "";
     const response = await fetch(
-      `${STRAPI_URL}/api/articles?sort=publishedAt:desc&pagination[limit]=1000&populate=blocks`,
+      `${STRAPI_URL}/api/articles?sort=publishedAt:desc${categoryFilter}&pagination[limit]=1000&populate=blocks`,
       {
         next: { revalidate: 60 }, // Revalidate every 60 seconds for fresh content
       }
